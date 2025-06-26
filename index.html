@@ -129,7 +129,17 @@
         <textarea 
             class="input-box" 
             id="transcriptInput" 
-            placeholder="Paste the advisor-student conversation transcript here..."
+            placeholder="Paste the advisor-student conversation transcript here...
+
+Example format:
+JW
+Jon Wagner
+
+SB
+Sarah Bennett
+
+00:00
+Hi Sarah, this is Jon from Salem University..."
         ></textarea>
         
         <div class="button-container">
@@ -142,6 +152,9 @@
     </div>
 
     <script>
+        // Define all functions in the global scope
+        
+        // Function to check input and enable/disable button
         function checkInput() {
             const input = document.getElementById('transcriptInput');
             const button = document.getElementById('processButton');
@@ -153,6 +166,7 @@
             }
         }
         
+        // Main function to generate PDF
         async function generatePDF() {
             const input = document.getElementById('transcriptInput');
             const button = document.getElementById('processButton');
@@ -180,49 +194,48 @@
                 const data = await response.json();
                 
                 if (response.ok && data.html) {
-    // Try to open new window
-    const newWindow = window.open('', '_blank');
-    
-    if (newWindow) {
-        // Popup was allowed
-        newWindow.document.write(data.html);
-        newWindow.document.close();
-        
-        // Add print button after a short delay to ensure DOM is ready
-        setTimeout(() => {
-            if (newWindow.document.body) {
-                newWindow.document.body.insertAdjacentHTML('afterbegin', `
-                    <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
-                        <button onclick="window.print()" style="
-                            background: #4CAF50;
-                            color: white;
-                            border: none;
-                            padding: 10px 20px;
-                            border-radius: 5px;
-                            cursor: pointer;
-                            font-size: 16px;
-                        ">Save as PDF</button>
-                    </div>
-                `);
-            }
-        }, 100);
-        
-        statusMessage.textContent = 'Guide generated! Check the new window and click "Save as PDF" to download.';
-        statusMessage.className = 'status-message success';
-    } else {
-        // Popup was blocked - create download instead
-        const blob = new Blob([data.html], { type: 'text/html' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'coaching-guide.html';
-        a.click();
-        window.URL.revokeObjectURL(url);
-        
-        statusMessage.textContent = 'Guide generated! File downloaded - open it and print to PDF.';
-        statusMessage.className = 'status-message success';
-    }
-}
+                    // Try to open new window
+                    const newWindow = window.open('', '_blank');
+                    
+                    if (newWindow) {
+                        // Popup was allowed
+                        newWindow.document.write(data.html);
+                        newWindow.document.close();
+                        
+                        // Add print button after a short delay
+                        setTimeout(() => {
+                            if (newWindow.document.body) {
+                                newWindow.document.body.insertAdjacentHTML('afterbegin', `
+                                    <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+                                        <button onclick="window.print()" style="
+                                            background: #4CAF50;
+                                            color: white;
+                                            border: none;
+                                            padding: 10px 20px;
+                                            border-radius: 5px;
+                                            cursor: pointer;
+                                            font-size: 16px;
+                                        ">Save as PDF</button>
+                                    </div>
+                                `);
+                            }
+                        }, 100);
+                        
+                        statusMessage.textContent = 'Guide generated! Check the new window and click "Save as PDF" to download.';
+                        statusMessage.className = 'status-message success';
+                    } else {
+                        // Popup was blocked - download instead
+                        const blob = new Blob([data.html], { type: 'text/html' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'salem-coaching-guide.html';
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        
+                        statusMessage.textContent = 'Guide generated! File downloaded - open it and print to PDF.';
+                        statusMessage.className = 'status-message success';
+                    }
                 } else {
                     throw new Error(data.error || 'Generation failed');
                 }
@@ -238,10 +251,12 @@
             }
         }
         
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize when page loads
+        function initialize() {
             const input = document.getElementById('transcriptInput');
             const button = document.getElementById('processButton');
             
+            // Add event listeners
             input.addEventListener('input', checkInput);
             input.addEventListener('paste', function() {
                 setTimeout(checkInput, 10);
@@ -253,8 +268,20 @@
                 }
             });
             
+            // Check initial state
             checkInput();
-        });
+        }
+        
+        // Make sure functions are globally accessible
+        window.checkInput = checkInput;
+        window.generatePDF = generatePDF;
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
     </script>
 </body>
 </html>
