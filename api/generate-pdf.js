@@ -951,41 +951,4 @@ Process this advisor-student conversation transcript and generate a complete HTM
 
 ${transcript}
 
-The output must be a complete HTML document with all sections properly styled. Create a professional report with:
-- Clean, modern design with proper spacing and typography
-- Color-coded performance levels (green for exceeds, blue for effective, yellow for developing, red for not meeting)
-- Highlighted sections for Great Moment (green box) and Coaching Notes (blue box)
-- Professional tables with hover effects
-- Responsive design that works on all devices
-- Print-friendly formatting
-
-Use this exact HTML structure and embed all CSS in the style tag:
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salem University Coaching Guide</title>
-    <style>
-        body { font-family: -apple-system, Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
-        h1 { font-size: 28px; color: #2c3e50; text-align: center; margin-bottom: 25px; }
-        h2 { font-size: 22px; color: #2c3e50; margin-top: 35px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e9ecef; }
-        h3 { font-size: 18px; color: #495057; margin-top: 25px; margin-bottom: 15px; }
-        .header-info { background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; font-weight: 600; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .great-moment { background-color: #e8f5e9; padding: 25px; border-radius: 8px; margin: 30px 0; border-left: 5px solid #4caf50; }
-        .great-moment h2 { color: #2e7d32; border: none; }
-        table { width: 100%; border-collapse: collapse; margin: 25px 0; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; }
-        th { background-color: #f8f9fa; font-weight: 600; color: #2c3e50; padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6; }
-        td { padding: 15px; border-bottom: 1px solid #e9ecef; }
-        tr:hover { background-color: #f8f9fa; }
-        .strategy-box { background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #dee2e6; }
-        .coaching-notes { background-color: #e3f2fd; padding: 25px; border-radius: 8px; margin: 30px 0; border-left: 5px solid #2196f3; }
-        .coaching-notes h2 { color: #1976d2; border: none; }
-        .focus-area { background-color: #fff3cd; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #ffc107; font-style: italic; }
-        @media print { body { font-size: 11pt; } @page { margin: 0.75in; } }
-    </style>
-</head>
-<body>
-    [Generate all content sections here with appropriate styling]
-</body>
-</html>`
+The output must be a complete HTML document. Include basic styling for readability.`
