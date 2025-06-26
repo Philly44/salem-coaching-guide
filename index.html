@@ -180,26 +180,49 @@
                 const data = await response.json();
                 
                 if (response.ok && data.html) {
-                    const newWindow = window.open('', '_blank');
-                    newWindow.document.write(data.html);
-                    newWindow.document.close();
-                    
-                    newWindow.document.body.insertAdjacentHTML('afterbegin', `
-                        <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
-                            <button onclick="window.print()" style="
-                                background: #4CAF50;
-                                color: white;
-                                border: none;
-                                padding: 10px 20px;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                font-size: 16px;
-                            ">Save as PDF</button>
-                        </div>
-                    `);
-                    
-                    statusMessage.textContent = 'Guide generated! Check the new window and click "Save as PDF" to download.';
-                    statusMessage.className = 'status-message success';
+    // Try to open new window
+    const newWindow = window.open('', '_blank');
+    
+    if (newWindow) {
+        // Popup was allowed
+        newWindow.document.write(data.html);
+        newWindow.document.close();
+        
+        // Add print button after a short delay to ensure DOM is ready
+        setTimeout(() => {
+            if (newWindow.document.body) {
+                newWindow.document.body.insertAdjacentHTML('afterbegin', `
+                    <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+                        <button onclick="window.print()" style="
+                            background: #4CAF50;
+                            color: white;
+                            border: none;
+                            padding: 10px 20px;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-size: 16px;
+                        ">Save as PDF</button>
+                    </div>
+                `);
+            }
+        }, 100);
+        
+        statusMessage.textContent = 'Guide generated! Check the new window and click "Save as PDF" to download.';
+        statusMessage.className = 'status-message success';
+    } else {
+        // Popup was blocked - create download instead
+        const blob = new Blob([data.html], { type: 'text/html' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'coaching-guide.html';
+        a.click();
+        window.URL.revokeObjectURL(url);
+        
+        statusMessage.textContent = 'Guide generated! File downloaded - open it and print to PDF.';
+        statusMessage.className = 'status-message success';
+    }
+}
                 } else {
                     throw new Error(data.error || 'Generation failed');
                 }
