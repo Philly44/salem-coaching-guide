@@ -143,7 +143,7 @@ Hi Sarah, this is Jon from Salem University..."
         ></textarea>
         
         <div class="button-container">
-            <button class="process-button" id="processButton" onclick="generateGuide()">
+            <button class="process-button" id="processButton" onclick="generatePDF()">
                 <span class="spinner"></span>
                 <span class="button-text">Generate Coaching Guide</span>
             </button>
@@ -174,7 +174,7 @@ Hi Sarah, this is Jon from Salem University..."
             checkInput();
         });
         
-        async function generateGuide() {
+        async function generatePDF() {
             const input = document.getElementById('transcriptInput');
             const button = document.getElementById('processButton');
             const statusMessage = document.getElementById('statusMessage');
