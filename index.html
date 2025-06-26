@@ -129,17 +129,7 @@
         <textarea 
             class="input-box" 
             id="transcriptInput" 
-            placeholder="Paste the advisor-student conversation transcript here...
-
-Example format:
-JW
-Jon Wagner
-
-SB
-Sarah Bennett
-
-00:00
-Hi Sarah, this is Jon from Salem University..."
+            placeholder="Paste the advisor-student conversation transcript here..."
         ></textarea>
         
         <div class="button-container">
@@ -162,25 +152,6 @@ Hi Sarah, this is Jon from Salem University..."
                 button.classList.remove('active');
             }
         }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('transcriptInput');
-    
-    input.addEventListener('input', checkInput);
-    input.addEventListener('paste', function() {
-        setTimeout(checkInput, 10);
-    });
-    
-    checkInput();
-    
-    // Add this new code
-    const button = document.getElementById('processButton');
-    button.addEventListener('click', function() {
-        if (button.classList.contains('active')) {
-            generatePDF();
-        }
-    });
-});
         
         async function generatePDF() {
             const input = document.getElementById('transcriptInput');
@@ -209,12 +180,10 @@ Hi Sarah, this is Jon from Salem University..."
                 const data = await response.json();
                 
                 if (response.ok && data.html) {
-                    // Open the HTML in a new window
                     const newWindow = window.open('', '_blank');
                     newWindow.document.write(data.html);
                     newWindow.document.close();
                     
-                    // Add print button to the new window
                     newWindow.document.body.insertAdjacentHTML('afterbegin', `
                         <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
                             <button onclick="window.print()" style="
@@ -229,7 +198,40 @@ Hi Sarah, this is Jon from Salem University..."
                         </div>
                     `);
                     
-                    statusMessage.textContent = '✅ Guide generated! Check the new window and click "Save as PDF" to download.';
+                    statusMessage.textContent = 'Guide generated! Check the new window and click "Save as PDF" to download.';
                     statusMessage.className = 'status-message success';
                 } else {
-                    throw new Error(data.error || 'Generat
+                    throw new Error(data.error || 'Generation failed');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                statusMessage.textContent = 'Error: ' + error.message;
+                statusMessage.className = 'status-message error';
+            } finally {
+                button.classList.remove('processing');
+                button.disabled = false;
+                button.innerHTML = '<span class="button-text">Generate Coaching Guide</span>';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('transcriptInput');
+            const button = document.getElementById('processButton');
+            
+            input.addEventListener('input', checkInput);
+            input.addEventListener('paste', function() {
+                setTimeout(checkInput, 10);
+            });
+            
+            button.addEventListener('click', function() {
+                if (button.classList.contains('active')) {
+                    generatePDF();
+                }
+            });
+            
+            checkInput();
+        });
+    </script>
+</body>
+</html>
