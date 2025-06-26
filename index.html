@@ -1,286 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salem University Coaching Guide Generator</title>
+    <title>Salem Coaching Guide - Debug Test</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             max-width: 800px;
-            width: 90%;
-        }
-        
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .input-box {
-            width: 100%;
-            height: 400px;
+            margin: 0 auto;
             padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: Arial, sans-serif;
-            resize: vertical;
-            box-sizing: border-box;
         }
         
-        .input-box:focus {
-            outline: none;
-            border-color: #4CAF50;
+        #transcript {
+            width: 100%;
+            height: 200px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
         }
         
-        .button-container {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        
-        .process-button {
-            padding: 15px 40px;
-            background-color: #4CAF50;
+        button {
+            background: #003366;
             color: white;
+            padding: 10px 20px;
             border: none;
-            border-radius: 5px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: not-allowed;
-            transition: all 0.3s ease;
-            opacity: 0.3;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .process-button.active {
-            opacity: 1;
             cursor: pointer;
+            margin: 10px 0;
         }
         
-        .process-button.active:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
+        button:hover {
+            background: #004080;
         }
         
-        .process-button.processing {
-            background-color: #FFA500;
-            cursor: wait;
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
         
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #ffffff;
-            border-top: 3px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        .process-button.processing .spinner {
-            display: inline-block;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .status-message {
+        #result {
             margin-top: 20px;
-            font-size: 16px;
-            color: #666;
-            text-align: center;
-            min-height: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            min-height: 200px;
         }
         
-        .status-message.error {
-            color: #d32f2f;
+        .error {
+            color: red;
+            background: #ffe6e6;
+            border: 1px solid #ff9999;
         }
         
-        .status-message.success {
-            color: #388e3c;
+        .success {
+            color: green;
+            background: #e6ffe6;
+            border: 1px solid #99ff99;
+        }
+        
+        pre {
+            white-space: pre-wrap;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Salem University Coaching Guide Generator</h1>
-        <textarea 
-            class="input-box" 
-            id="transcriptInput" 
-            placeholder="Paste the advisor-student conversation transcript here...
-
-Example format:
-JW
-Jon Wagner
-
-SB
-Sarah Bennett
-
+    <h1>Salem Coaching Guide - Debug Test</h1>
+    
+    <div>
+        <label for="transcript">Paste your transcript here:</label>
+        <textarea id="transcript" placeholder="BD
+Brenda Davis
 00:00
-Hi Sarah, this is Jon from Salem University..."
-        ></textarea>
-        
-        <div class="button-container">
-            <button class="process-button" id="processButton">
-                <span class="spinner"></span>
-                <span class="button-text">Generate Coaching Guide</span>
-            </button>
-            <div class="status-message" id="statusMessage"></div>
-        </div>
+So cool, so I see that you're interested in physical education..."></textarea>
     </div>
+    
+    <button onclick="testAPI()" id="testBtn">Test API</button>
+    <button onclick="loadSampleTranscript()">Load Sample Transcript</button>
+    
+    <div id="result">Results will appear here...</div>
 
     <script>
-        // Define all functions in the global scope
-        
-        // Function to check input and enable/disable button
-        function checkInput() {
-            const input = document.getElementById('transcriptInput');
-            const button = document.getElementById('processButton');
-            
-            if (input.value.trim()) {
-                button.classList.add('active');
-            } else {
-                button.classList.remove('active');
-            }
+        function loadSampleTranscript() {
+            document.getElementById('transcript').value = `BD
+Brenda Davis
+00:00
+So cool, so I see that you're interested in physical education.
+
+DB
+David Butte
+00:03
+Yeah.
+
+BD
+Brenda Davis
+00:04
+And I just wanted to find out a little bit more about you and your interest in that area and, and kind of where you see yourself going.
+
+DB
+David Butte
+00:13
+Well, I just got my associates degree a couple weeks ago and yeah, I just, I don't know how I'm just coaching this. It just clicked. I just wanted to start doing it.
+
+BD
+Brenda Davis
+16:47
+Yeah, I can do the next steps for you, I'll, I'll put all that down and that, and then I also get.`;
         }
-        
-        // Main function to generate PDF
-        async function generatePDF() {
-            const input = document.getElementById('transcriptInput');
-            const button = document.getElementById('processButton');
-            const statusMessage = document.getElementById('statusMessage');
+
+        async function testAPI() {
+            const transcript = document.getElementById('transcript').value;
+            const resultDiv = document.getElementById('result');
+            const testBtn = document.getElementById('testBtn');
             
-            if (!input.value.trim() || button.classList.contains('processing')) return;
+            if (!transcript.trim()) {
+                resultDiv.innerHTML = '<div class="error">Please enter a transcript first.</div>';
+                return;
+            }
             
-            button.classList.add('processing');
-            button.disabled = true;
-            button.innerHTML = '<span class="spinner"></span><span>Generating Guide...</span>';
-            statusMessage.textContent = 'Processing transcript with AI...';
-            statusMessage.className = 'status-message';
+            testBtn.disabled = true;
+            testBtn.textContent = 'Testing...';
+            resultDiv.innerHTML = '<div>Making API call...</div>';
             
             try {
+                console.log('Making request to /api/generate-pdf');
+                console.log('Transcript length:', transcript.length);
+                
                 const response = await fetch('/api/generate-pdf', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        transcript: input.value.trim()
-                    })
+                    body: JSON.stringify({ transcript })
                 });
                 
-                const data = await response.json();
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
                 
-                if (response.ok && data.html) {
-                    // Try to open new window
-                    const newWindow = window.open('', '_blank');
-                    
-                    if (newWindow) {
-                        // Popup was allowed
-                        newWindow.document.write(data.html);
-                        newWindow.document.close();
-                        
-                        // Add print button after a short delay
-                        setTimeout(() => {
-                            if (newWindow.document.body) {
-                                newWindow.document.body.insertAdjacentHTML('afterbegin', `
-                                    <div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
-                                        <button onclick="window.print()" style="
-                                            background: #4CAF50;
-                                            color: white;
-                                            border: none;
-                                            padding: 10px 20px;
-                                            border-radius: 5px;
-                                            cursor: pointer;
-                                            font-size: 16px;
-                                        ">Save as PDF</button>
-                                    </div>
-                                `);
-                            }
-                        }, 100);
-                        
-                        statusMessage.textContent = 'Guide generated! Check the new window and click "Save as PDF" to download.';
-                        statusMessage.className = 'status-message success';
-                    } else {
-                        // Popup was blocked - download instead
-                        const blob = new Blob([data.html], { type: 'text/html' });
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = 'salem-coaching-guide.html';
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-                        
-                        statusMessage.textContent = 'Guide generated! File downloaded - open it and print to PDF.';
-                        statusMessage.className = 'status-message success';
-                    }
+                // Get raw response text first
+                const responseText = await response.text();
+                console.log('Raw response (first 500 chars):', responseText.substring(0, 500));
+                
+                // Try to parse as JSON
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    console.log('Successfully parsed JSON');
+                } catch (parseError) {
+                    console.error('JSON parse failed:', parseError);
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>JSON Parse Error</h3>
+                            <p><strong>Parse Error:</strong> ${parseError.message}</p>
+                            <p><strong>Response Status:</strong> ${response.status}</p>
+                            <h4>Raw Response:</h4>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Success!</h3>
+                            <p><strong>Generated Length:</strong> ${data.debug?.responseLength || 'unknown'}</p>
+                            <p><strong>Timestamp:</strong> ${data.debug?.timestamp || 'unknown'}</p>
+                            ${data.content ? '<h4>Generated Content:</h4>' + data.content : ''}
+                        </div>
+                    `;
                 } else {
-                    throw new Error(data.error || 'Generation failed');
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ API Error</h3>
+                            <p><strong>Error:</strong> ${data.error || 'Unknown error'}</p>
+                            <p><strong>Details:</strong> ${data.details || 'No details'}</p>
+                            <h4>Debug Info:</h4>
+                            <pre>${JSON.stringify(data.debug || {}, null, 2)}</pre>
+                        </div>
+                    `;
                 }
                 
             } catch (error) {
-                console.error('Error:', error);
-                statusMessage.textContent = 'Error: ' + error.message;
-                statusMessage.className = 'status-message error';
+                console.error('Fetch error:', error);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Network Error</h3>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p>Check browser console for more details.</p>
+                    </div>
+                `;
             } finally {
-                button.classList.remove('processing');
-                button.disabled = false;
-                button.innerHTML = '<span class="button-text">Generate Coaching Guide</span>';
+                testBtn.disabled = false;
+                testBtn.textContent = 'Test API';
             }
-        }
-        
-        // Initialize when page loads
-        function initialize() {
-            const input = document.getElementById('transcriptInput');
-            const button = document.getElementById('processButton');
-            
-            // Add event listeners
-            input.addEventListener('input', checkInput);
-            input.addEventListener('paste', function() {
-                setTimeout(checkInput, 10);
-            });
-            
-            button.addEventListener('click', function() {
-                if (button.classList.contains('active')) {
-                    generatePDF();
-                }
-            });
-            
-            // Check initial state
-            checkInput();
-        }
-        
-        // Make sure functions are globally accessible
-        window.checkInput = checkInput;
-        window.generatePDF = generatePDF;
-        
-        // Initialize when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initialize);
-        } else {
-            initialize();
         }
     </script>
 </body>
