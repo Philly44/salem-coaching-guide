@@ -143,7 +143,7 @@ Hi Sarah, this is Jon from Salem University..."
         ></textarea>
         
         <div class="button-container">
-            <button class="process-button" id="processButton" onclick="generatePDF()">
+            <button class="process-button" id="processButton">
                 <span class="spinner"></span>
                 <span class="button-text">Generate Coaching Guide</span>
             </button>
@@ -164,15 +164,23 @@ Hi Sarah, this is Jon from Salem University..."
         }
         
         document.addEventListener('DOMContentLoaded', function() {
-            const input = document.getElementById('transcriptInput');
-            
-            input.addEventListener('input', checkInput);
-            input.addEventListener('paste', function() {
-                setTimeout(checkInput, 10);
-            });
-            
-            checkInput();
-        });
+    const input = document.getElementById('transcriptInput');
+    
+    input.addEventListener('input', checkInput);
+    input.addEventListener('paste', function() {
+        setTimeout(checkInput, 10);
+    });
+    
+    checkInput();
+    
+    // Add this new code
+    const button = document.getElementById('processButton');
+    button.addEventListener('click', function() {
+        if (button.classList.contains('active')) {
+            generatePDF();
+        }
+    });
+});
         
         async function generatePDF() {
             const input = document.getElementById('transcriptInput');
