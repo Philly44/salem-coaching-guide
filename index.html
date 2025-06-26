@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salem University Coaching Guide Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+            width: 90%;
+        }
+        
+        .input-box {
+            width: 100%;
+            height: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        .input-box:focus {
+            outline: none;
+            border-color: #999;
+        }
+        
+        .button-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .process-button {
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+            opacity: 0.3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .process-button.active {
+            opacity: 1;
+            cursor: pointer;
+        }
+        
+        .process-button.active:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        
+        .process-button.processing {
+            background-color: #FFA500;
+            cursor: wait;
+        }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        .process-button.processing .spinner {
+            display: inline-block;
+        }
+        
+        .process-button.processing .button-text {
+            display: none;
+        }
+        
+        .process-button .processing-text {
+            display: none;
+        }
+        
+        .process-button.processing .processing-text {
+            display: inline;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            min-height: 40px;
+            padding: 10px;
+        }
+        
+        .debug-info {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 12px;
+            display: none;
+        }
+        
+        .debug-info.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Salem University Coaching Guide Generator - Test Mode</h2>
+        <textarea 
+            class="input-box" 
+            id="transcriptInput" 
+            placeholder="Paste advisor-student conversation transcript here..."
+        ></textarea>
+        
+        <div class="button-container">
+            <button class="process-button" id="processButton" onclick="generatePDF()">
+                <span class="spinner"></span>
+                <span class="button-text">Test Function</span>
+                <span class="processing-text">Testing...</span>
+            </button>
+            <div class="status-message" id="statusMessage"></div>
+            <div class="debug-info" id="debugInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        function checkInput() {
+            const input = document.getElementById('transcriptInput');
+            const button = document.getElementById('processButton');
+            
+            if (input.value.trim()) {
+                button.classList.add('active');
+            } else {
+                button.classList.remove('active');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('transcriptInput');
+            
+            input.addEventListener('input', checkInput);
+            input.addEventListener('paste', function() {
+                setTimeout(checkInput, 10);
+            });
+            
+            checkInput();
+        });
+        
+        async function generatePDF() {
+            const input = document.getElementById('transcriptInput');
+            const button = document.getElementById('processButton');
+            const statusMessage = document.getElementById('statusMessage');
+            const debugInfo = document.getElementById('debugInfo');
+            
+            if (!input.value.trim() || button.classList.contains('processing')) return;
+            
+            button.classList.add('processing');
+            button.disabled = true;
+            statusMessage.textContent = 'Testing function...';
+            debugInfo.classList.remove('show');
+            
+            try {
+                console.log('Sending request to:', '/.netlify/functions/generate-pdf');
+                
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        transcript: input.value.trim()
+                    })
+                });
+                
+                const responseText = await response.text();
+                console.log('Response:', responseText);
+                
+                if (response.ok) {
+                    const data = JSON.parse(responseText);
+                    statusMessage.textContent = '✅ Function is working!';
+                    debugInfo.innerHTML = `<strong>Success!</strong><br>
+                        Message: ${data.message}<br>
+                        Transcript Length: ${data.transcriptLength} characters<br>
+                        Timestamp: ${data.timestamp}`;
+                    debugInfo.classList.add('show');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${responseText}`);
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                statusMessage.textContent = '❌ Error: ' + error.message;
+                debugInfo.innerHTML = `<strong>Error Details:</strong><br>${error.message}`;
+                debugInfo.classList.add('show');
+            } finally {
+                button.classList.remove('processing');
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
