@@ -951,4 +951,21 @@ Process this advisor-student conversation transcript and generate a complete HTM
 
 ${transcript}
 
-The output must be a complete HTML document. Include basic styling for readability.`
+The output must be a complete HTML document with embedded CSS styling that matches the professional appearance of the Salem University coaching guides.`
+            }]
+        });
+
+        // Return the generated HTML
+        return res.status(200).json({ 
+            html: message.content[0].text,
+            success: true
+        });
+        
+    } catch (error) {
+        console.error('API Error:', error);
+        return res.status(500).json({ 
+            error: 'AI generation failed', 
+            details: error.message 
+        });
+    }
+}
